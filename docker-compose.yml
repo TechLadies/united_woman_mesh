@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+  # For frontend service
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    working_dir: /opt/client
+    container_name: client
+    volumes:
+      - ../united_women_frontend:/opt/client/
+    ports:
+      - "3000:3000"
+    networks:
+      mainframe:
+        ipv4_address: 172.16.237.2
+    extra_hosts:
+      - "development-backend.techladies.net:172.16.237.3"
+
+  # For backend service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    working_dir: /opt/api
+    container_name: api
+    volumes:
+      - ../united_women_backend:/opt/api/
+    ports:
+      - "3001:3001"
+    networks:
+      mainframe:
+        ipv4_address: 172.16.237.3
+      backend:
+        ipv4_address: 172.16.238.3
+    extra_hosts:
+      - "development-db.techladies.net:172.16.238.2"
+    # Wait for database to go up first
+
+  # For database container
+  db:
+    image: postgres:9.6.15-alpine
+    container_name: db
+    volumes:
+      - .db/:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      backend:
+        ipv4_address: 172.16.238.2
+
+networks:
+  mainframe:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.237.0/24
+
+  backend:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24 

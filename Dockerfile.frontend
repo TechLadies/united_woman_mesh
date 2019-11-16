@@ -1,0 +1,7 @@
+FROM node:10.17.0-alpine
+
+RUN apk add --no-cache bash
+COPY ./run_frontend /
+WORKDIR /opt/client
+
+ENTRYPOINT ["/run_frontend"] 

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+npm install
+
+export NODE_ENV=development
+
+npm start

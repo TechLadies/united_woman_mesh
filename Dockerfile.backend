@@ -1,0 +1,8 @@
+FROM node:10.17.0-alpine
+
+RUN apk add --no-cache bash python make g++
+COPY ./run_backend /
+COPY ./wait-for-it /
+WORKDIR /opt/api
+
+ENTRYPOINT ["/run_backend"] 

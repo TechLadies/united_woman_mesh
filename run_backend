@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+npm install
+
+# Wait for database to start before migration scripts
+/wait-for-it development-db.techladies.net:5432 
+
+export NODE_ENV=development
+
+set +e && npm run db:create 2> /dev/null && set -e 2> /dev/null
+npm run db:migrate
+npm run dev
